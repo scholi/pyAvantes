@@ -12,7 +12,9 @@ import pyAvantes
 
 path = os.path.abspath(pyAvantes.__path__[0]+r'\..\doc\example.Raw8')
 S = pyAvantes.Raw8(path)
-plt.plot(S.getWavelength(),S.getRelativeIrradiance());
+fig, ax = plt.subplots(1,1,figsize=(10,7))
+fig.patch.set_facecolor('white')
+ax.plot(S.getWavelength(),S.getRelativeIrradiance());
 ```
     
 ![png](./doc/output_0_0.png)

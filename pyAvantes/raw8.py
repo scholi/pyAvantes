@@ -39,18 +39,24 @@ _Raw8_Fields = [("version","5s"),
     ("fitdata","5d"),
     ("comment","130s")
 ]
+
+def PlanckFunction(temp: float, wl: np.array):
+    c = 3e8 # speed of light [m s**−1]
+    h = 6.625e-34 # Planck constant [J s]
+    kb = 1.38e-23 # Boltzmann constant [J K**−1]
+    return ((2*h*c*c)/(wl**5)) * 1./(np.exp((h*c)/(wl*kb*temp))-1)
+
 class Raw8:
-    def __init__(self, filename):
-        self.res = {}
+    def __init__(self, filename: str):
+        self.header = {}
         with open(filename,"rb") as f:
-            self.res = {}
             for k in _Raw8_Fields:
                 s = struct.Struct(k[1])
                 dat = s.unpack(f.read(s.size))
                 if len(dat)==1:
                     dat = dat[0]
-                self.res[k[0]] = dat
-            dataLength =  self.res['stopPixel']-self.res['startPixel']+1
+                self.header[k[0]] = dat
+            dataLength =  self.header['stopPixel']-self.header['startPixel']+1
             self.dataLenth = dataLength
             self.data = {
                 'wl': struct.unpack(f"<{dataLength}f",f.read(4*dataLength)),
@@ -59,7 +65,7 @@ class Raw8:
                 'ref': struct.unpack(f"<{dataLength}f",f.read(4*dataLength))
                 }
     
-    def getData(self, name):
+    def getData(self, name: str):
         return np.array(self.data[name])
 
     def getScope(self):
@@ -73,3 +79,9 @@ class Raw8:
 
     def getRef(self):
         return self.getData("ref")
+
+    def getBlackBody(self):
+        return PlanckFunction(self.header['ColorTemp'], self.getWavelength()*1e-9)
+
+    def getRelativeIrradiance(self):
+        return self.getBlackBody()*(self.getScope()-self.getDark())

@@ -15,6 +15,8 @@ S = pyAvantes.Raw8(path)
 fig, ax = plt.subplots(1,1,figsize=(10,7))
 fig.patch.set_facecolor('white')
 ax.plot(S.getWavelength(),S.getRelativeIrradiance());
+print(S.getDatetime())
 ```
+`2022-06-09 16:11:00`
     
 ![png](./doc/output_0_0.png)

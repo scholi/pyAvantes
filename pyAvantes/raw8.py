@@ -86,6 +86,8 @@ class Raw8:
 
     def getRelativeIrradiance(self):
         return self.getBlackBody()*(self.getScope()-self.getDark())
+# This is from the manual: http://www.content.mphotonics.de/AVA/AVASOFT_Manual_8.4.pdf
+# Page 35. But I'm not conviced that this is correct
 
     def getDate(self):
         d = self.header['SPCfiledate']

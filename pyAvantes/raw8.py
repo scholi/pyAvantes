@@ -1,5 +1,6 @@
 import struct
 import numpy as np
+import datetime as datetime
 
 _Raw8_Fields = [("version","5s"),
     ("numSpectra","B"),
@@ -30,7 +31,7 @@ _Raw8_Fields = [("version","5s"),
     ("laserWavelength","f"),
     ("store2ram","H"),
     ("timestamp","I"),
-    ("SPCfiledate","4c"),
+    ("SPCfiledate","I"),
     ("detectorTemp","f"),
     ("boardTemp","f"),
     ("NTC2volt","f"),
@@ -85,3 +86,15 @@ class Raw8:
 
     def getRelativeIrradiance(self):
         return self.getBlackBody()*(self.getScope()-self.getDark())
+
+    def getDate(self):
+        d = self.header['SPCfiledate']
+        return {'year':d>>20,
+            'month': (d>>16)%(2**4),
+            'day': (d>>11)%(2**5),
+            'hour': (d>>6)%(2**5),
+            'minute': d%(2**6)}
+
+    def getDatetime(self):
+        d = self.getDate()
+        return datetime.datetime(d['year'],d['month'],d['day'],d['hour'],d['minute'])

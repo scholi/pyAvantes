@@ -58,7 +58,7 @@ class Raw8:
                     dat = dat[0]
                 self.header[k[0]] = dat
             dataLength =  self.header['stopPixel']-self.header['startPixel']+1
-            self.dataLenth = dataLength
+            self.dataLength = dataLength
             self.data = {
                 'wl': struct.unpack(f"<{dataLength}f",f.read(4*dataLength)),
                 'scope': struct.unpack(f"<{dataLength}f",f.read(4*dataLength)),
